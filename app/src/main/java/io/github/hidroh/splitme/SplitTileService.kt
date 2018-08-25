@@ -46,6 +46,7 @@ class SplitTileService : TileService() {
   private fun updateTileState() {
     qsTile?.apply {
       state = if (splitScreen) STATE_ACTIVE else STATE_INACTIVE
+      label = getString(if (splitScreen) R.string.label_on else R.string.label_off)
       updateTile()
     }
   }
