@@ -4,5 +4,5 @@
     android:accessibilityEventTypes="typeWindowStateChanged"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagDefault"
-    android:description="@string/app_name"
-    android:summary="@string/app_name"/>
+    android:description="@string/description"
+    android:summary="@string/summary"/>
