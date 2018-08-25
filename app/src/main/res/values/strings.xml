@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">splitme</string>
+    <string name="accessibility_required">Accessibility service is required for this setting. Enable it?</string>
 </resources>

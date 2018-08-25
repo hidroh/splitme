@@ -15,21 +15,25 @@
             android:name=".SplitToggleService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
-                <action android:name="android.accessibilityservice.AccessibilityService" />
+                <action android:name="android.accessibilityservice.AccessibilityService"/>
             </intent-filter>
             <meta-data
                 android:name="android.accessibilityservice"
-                android:resource="@xml/accessibility_service" />
+                android:resource="@xml/accessibility_service"/>
         </service>
         <service
+            android:name=".SplitTileService"
             android:icon="@drawable/ic_split_black_24dp"
             android:label="@string/app_name"
-            android:name=".SplitTileService"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
                 <action
                     android:name="android.service.quicksettings.action.QS_TILE"/>
             </intent-filter>
         </service>
+
+        <activity
+            android:name=".InvisibleActivity"
+            android:theme="@android:style/Theme.NoDisplay"/>
     </application>
 </manifest>
