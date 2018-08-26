@@ -3,6 +3,9 @@ package io.github.hidroh.splitme
 import android.accessibilityservice.AccessibilityServiceInfo.FEEDBACK_GENERIC
 import android.content.*
 import android.content.Intent.*
+import android.content.res.Configuration
+import android.content.res.Configuration.ORIENTATION_LANDSCAPE
+import android.graphics.drawable.Icon
 import android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS
 import android.service.quicksettings.Tile.STATE_ACTIVE
 import android.service.quicksettings.Tile.STATE_INACTIVE
@@ -20,9 +23,11 @@ class SplitTileService : TileService() {
     }
   }
   private var isActive: Boolean = false
+  private var iconResId: Int = R.drawable.ic_split_black_24dp
 
   override fun onStartListening() {
     localBroadcastManager.registerReceiver(receiver, IntentFilter(ACTION_SPLIT_SCREEN_CHECKED))
+    updateIcon(resources.configuration)
     checkSplitScreen()
   }
 
@@ -39,6 +44,11 @@ class SplitTileService : TileService() {
     }
   }
 
+  override fun onConfigurationChanged(newConfig: Configuration) {
+    updateIcon(newConfig)
+    updateTileState(isActive)
+  }
+
   private fun toggleAndCollapse() {
     startActivityAndCollapse(Intent(this, InvisibleActivity::class.java)
         .setAction(ACTION_TOGGLE_SPLIT_SCREEN)
@@ -50,6 +60,7 @@ class SplitTileService : TileService() {
     qsTile?.apply {
       state = if (isActive) STATE_ACTIVE else STATE_INACTIVE
       label = getString(if (isActive) R.string.label_on else R.string.label_off)
+      icon = Icon.createWithResource(this@SplitTileService, iconResId)
       updateTile()
     }
   }
@@ -78,5 +89,13 @@ class SplitTileService : TileService() {
               .addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_NO_HISTORY))
         }
         .create())
+  }
+
+  private fun updateIcon(newConfig: Configuration) {
+    iconResId = if (newConfig.orientation == ORIENTATION_LANDSCAPE) {
+      R.drawable.ic_split_land_black_24dp
+    } else {
+      R.drawable.ic_split_black_24dp
+    }
   }
 }
