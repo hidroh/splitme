@@ -8,8 +8,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 class InvisibleActivity : Activity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    SplitTileService.splitScreen = isInMultiWindowMode
-    LocalBroadcastManager.getInstance(this).sendBroadcast(Intent(ACTION_CHECK_SPLIT_SCREEN))
+    val broadcastManager = LocalBroadcastManager.getInstance(this)
+    when(intent.action) {
+      ACTION_CHECK_SPLIT_SCREEN -> broadcastManager.sendBroadcast(Intent(ACTION_SPLIT_SCREEN_CHECKED)
+          .putExtra(EXTRA_IS_IN_SPLIT_SCREEN, isInMultiWindowMode))
+      ACTION_TOGGLE_SPLIT_SCREEN -> broadcastManager.sendBroadcast(Intent(ACTION_TOGGLE_SPLIT_SCREEN))
+    }
     finish()
   }
 }

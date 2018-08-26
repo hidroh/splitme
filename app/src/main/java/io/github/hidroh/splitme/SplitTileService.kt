@@ -16,12 +16,13 @@ class SplitTileService : TileService() {
     get() = LocalBroadcastManager.getInstance(this)
   private val receiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-      updateTileState()
+      updateTileState(intent.getBooleanExtra(EXTRA_IS_IN_SPLIT_SCREEN, false))
     }
   }
+  private var isActive: Boolean = false
 
   override fun onStartListening() {
-    localBroadcastManager.registerReceiver(receiver, IntentFilter(ACTION_CHECK_SPLIT_SCREEN))
+    localBroadcastManager.registerReceiver(receiver, IntentFilter(ACTION_SPLIT_SCREEN_CHECKED))
     checkSplitScreen()
   }
 
@@ -30,29 +31,32 @@ class SplitTileService : TileService() {
   }
 
   override fun onClick() {
-    if (!enabled()) {
-      prompt()
+    if (enabled()) {
+      updateTileState(!isActive)
+      toggleAndCollapse()
     } else {
-      toggle()
-      updateTileState()
+      prompt()
     }
   }
 
-  private fun toggle() {
-    localBroadcastManager.sendBroadcast(Intent(ACTION_TOGGLE_SPLIT_SCREEN))
-    splitScreen = !splitScreen
+  private fun toggleAndCollapse() {
+    startActivityAndCollapse(Intent(this, InvisibleActivity::class.java)
+        .setAction(ACTION_TOGGLE_SPLIT_SCREEN)
+        .setFlags(FLAG_ACTIVITY_NEW_TASK))
   }
 
-  private fun updateTileState() {
+  private fun updateTileState(active: Boolean) {
+    isActive = active
     qsTile?.apply {
-      state = if (splitScreen) STATE_ACTIVE else STATE_INACTIVE
-      label = getString(if (splitScreen) R.string.label_on else R.string.label_off)
+      state = if (isActive) STATE_ACTIVE else STATE_INACTIVE
+      label = getString(if (isActive) R.string.label_on else R.string.label_off)
       updateTile()
     }
   }
 
   private fun checkSplitScreen() {
     startActivity(Intent(this, InvisibleActivity::class.java)
+        .setAction(ACTION_CHECK_SPLIT_SCREEN)
         .setFlags(FLAG_ACTIVITY_LAUNCH_ADJACENT or FLAG_ACTIVITY_NEW_TASK))
   }
 
@@ -74,9 +78,5 @@ class SplitTileService : TileService() {
               .addFlags(FLAG_ACTIVITY_NEW_TASK or FLAG_ACTIVITY_NO_HISTORY))
         }
         .create())
-  }
-
-  companion object {
-    var splitScreen: Boolean = false
   }
 }
