@@ -1,6 +1,7 @@
 package io.github.hidroh.splitme
 
 import android.accessibilityservice.AccessibilityServiceInfo.FEEDBACK_GENERIC
+import android.app.AlertDialog
 import android.content.*
 import android.content.Intent.*
 import android.content.res.Configuration
@@ -11,7 +12,6 @@ import android.service.quicksettings.Tile.STATE_ACTIVE
 import android.service.quicksettings.Tile.STATE_INACTIVE
 import android.service.quicksettings.TileService
 import android.view.accessibility.AccessibilityManager
-import androidx.appcompat.app.AlertDialog
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 class SplitTileService : TileService() {
@@ -81,7 +81,7 @@ class SplitTileService : TileService() {
   }
 
   private fun prompt() {
-    showDialog(AlertDialog.Builder(this, R.style.Theme_AppCompat_Light_Dialog_Alert)
+    showDialog(AlertDialog.Builder(this, android.R.style.Theme_DeviceDefault_Light_Dialog_Alert)
         .setMessage(R.string.accessibility_required)
         .setNegativeButton(android.R.string.cancel, null)
         .setPositiveButton(android.R.string.ok) { _, _ ->
